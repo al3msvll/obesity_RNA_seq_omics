@@ -1,0 +1,9 @@
+{
+    "salmon_version": "1.10.3",
+    "index": "salmon_index_Tcreado",
+    "libType": "A",
+    "mates1": "LisaSimpson_R1.fastq.gz",
+    "mates2": "LisaSimpson_R2.fastq.gz",
+    "output": "Lisa_quant_creado",
+    "auxDir": "aux_info"
+}
