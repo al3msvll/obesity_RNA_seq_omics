@@ -1,0 +1,33 @@
+#En este script se muestra cómo se realizó el conteo 
+# Sobre el entorno creado en el control de calidad se realizaron los siguientes pasos
+
+# 1. Instalación de salmon
+
+sudo apt install salmon
+
+# 2. Redirección de nuestro escritorio y creación del transcriptoma de referencia
+
+cd /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/TallerGrupal_Ficheros/Genes
+
+cat */rna.fna > transcriptoma_ref.fasta
+
+# 3. Creacion de un índice para salmon 
+
+salmon index -t transcriptoma_ref.fasta -i indice_simpson
+
+# 4. Conteo usando el programa Salmon
+
+for fn in *_R1_filtered.fastq.gz
+do
+  samp=$(basename ${fn} _R1_filtered.fastq.gz)
+  
+  salmon quant -i indice_simpson -l A \
+         -1 ${samp}_R1_filtered.fastq.gz \
+         -2 ${samp}_R2_filtered.fastq.gz \
+         -p 4 \
+         --validateMappings \
+         -o quant_${samp}
+done
+
+# Esto crea las carpetas quant que vemos en esta carpeta del repositorio
+
