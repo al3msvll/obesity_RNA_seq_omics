@@ -1,0 +1,28 @@
+# Este es el código usado para el control de calidad de los datos iniciales
+
+# 1. Creamos un entorno con los programaas que vamos a utilizar
+cd /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2
+
+conda create -n Actigup -c bioconda -c conda-forge -c defaults -c r fastqc fastp multiqc bwa samtools=1.19 unicycler htslib openjdk=17 bandage quast qualimap prokka^C
+
+# 2. Activamos el entorno
+
+conda activate Antigup
+
+# 3. Creamos las carpetas necesarias
+
+mkdir -p Quality/Raw Quality/Filtered Trimmed
+
+# 4. Cambiamos nuestro directrio y realizamos el FastQC
+
+cd /Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/TallerGrupal_Ficheros/Fastqs
+
+fastqc *fastq.gz -o /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Quality/Raw -t 32
+
+# 5. Realizamos un filtrado de secuencias por calidad y longitud
+
+for i in $(cat muestras.txt); do fastp --in1 $i*R1* --in2 $i*R2* --out1 /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Trimmed/$i"_R1_filtered.fastq.gz" --out2 /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Trimmed/$i"_R2_filtered.fastq.gz" --detect_adapter_for_pe --cut_front --cut_tail --cut_window_size 12 --cut_mean_quality 30 --length_required 35 --json /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Trimmed/$i.json --html /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Trimmed$i.html --thread 32; done
+
+# 6. Volvemos a hacer otro FastQC después del filtrado 
+
+fastqc /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Trimmed/*fastq.gz -o /home/alex/Escritorio/master-bioinfo/sec-omi/act-grup/act2/mubio03_act2/Quality/Filtered --threads 32
